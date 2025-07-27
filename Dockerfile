@@ -17,6 +17,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy Laravel files
 COPY . .
+RUN composer install
+
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -29,6 +31,7 @@ RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-avail
 
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
+COPY .env.example .env
 
 # Generate APP_KEY
 RUN php artisan key:generate
@@ -38,3 +41,6 @@ RUN mkdir -p database && touch database/database.sqlite
 
 # Link storage
 RUN php artisan storage:link
+
+RUN chmod -R 775 storage bootstrap/cache
+
