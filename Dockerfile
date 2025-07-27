@@ -1,5 +1,5 @@
 # Dockerfile
-FROM php:8.2-apache
+FROM php:8.2-apache-slim
 
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
