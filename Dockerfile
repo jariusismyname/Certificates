@@ -41,8 +41,10 @@ RUN mkdir -p database && touch database/database.sqlite
 
 # Link storage
 RUN php artisan storage:link
+RUN touch /tmp/database.sqlite
 
 RUN chmod -R 775 storage bootstrap/cache
+RUN chmod 666 /tmp/database.sqlite
 
 # Create SQLite file
 RUN touch database/database.sqlite
