@@ -37,8 +37,10 @@ COPY .env.example .env
 RUN php artisan key:generate
 
 # Create SQLite database file
+# Create SQLite file with correct permissions
 RUN mkdir -p database && touch database/database.sqlite
-RUN chmod 666 database/database.sqlite
+RUN chmod -R 775 database
+RUN chown -R www-data:www-data database
 
  
 
