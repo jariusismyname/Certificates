@@ -17,39 +17,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy Laravel files
 COPY . .
-RUN composer install
-
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Set environment
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
-# Update Apache config
+# Update Apache config to serve from public/
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
-COPY .env.example .env
+# Set permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
 
-# Generate APP_KEY
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy default env and set Laravel key
+COPY .env.example .env
 RUN php artisan key:generate
 
-# Create SQLite file
-RUN mkdir -p database && touch database/database.sqlite
-
-# Link storage
+# Only create storage link here
 RUN php artisan storage:link
-RUN touch /tmp/database.sqlite
-
-RUN chmod -R 775 storage bootstrap/cache
-RUN chmod 666 /tmp/database.sqlite
-
-# Create SQLite file
-RUN touch database/database.sqlite
-
-# Run migrations
-RUN php artisan migrate --force
-
-

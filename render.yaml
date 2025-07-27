@@ -6,4 +6,7 @@ services:
     dockerfilePath: ./Dockerfile
     branch: main
     buildCommand: ""
-    startCommand: apache2-foreground
+    startCommand: |
+      touch /tmp/database.sqlite
+      php artisan migrate --force
+      apache2-foreground
