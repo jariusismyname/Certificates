@@ -32,8 +32,13 @@ RUN chmod -R 775 storage bootstrap/cache
 RUN composer install --no-dev --optimize-autoloader
 
 # Copy default env and set Laravel key
+# Copy default env and set Laravel key
 COPY .env.example .env
 RUN php artisan key:generate
+
+# Create SQLite database file
+RUN mkdir -p database && touch database/database.sqlite
+RUN chmod 666 database/database.sqlite
 
 # Only create storage link here
 RUN php artisan storage:link
@@ -42,3 +47,4 @@ RUN php artisan cache:clear
 RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
+
