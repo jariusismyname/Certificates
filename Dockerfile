@@ -34,6 +34,8 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy default env and set Laravel key
 # Copy default env and set Laravel key
 COPY .env.example .env
+RUN sed -i 's|^DB_DATABASE=.*|DB_DATABASE=/var/www/html/database/database.sqlite|' .env
+
 RUN php artisan key:generate
 
 # Create SQLite database file
