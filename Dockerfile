@@ -44,3 +44,10 @@ RUN php artisan storage:link
 
 RUN chmod -R 775 storage bootstrap/cache
 
+# Create SQLite file
+RUN touch database/database.sqlite
+
+# Run migrations
+RUN php artisan migrate --force
+
+
